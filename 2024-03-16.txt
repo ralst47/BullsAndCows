@@ -1,0 +1,133 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace::std;
+
+class TStep //ход + быки и коровы
+{
+public:
+    string code = "";//ход
+    int bulls = 0;//быки
+    int cows = 0;//коровы
+};
+
+//bool operator ==(const TStep& variant, const string& other)
+//{
+//    int bulls = 0;
+//    for (int i = 0; i < other.size(); ++i)//подсчёт быков
+//    {
+//        if (variant.code[i] == other[i]) ++bulls;
+//        //if (variant.bulls < bulls) return false;
+//    }
+//    if (variant.bulls != bulls) return false;
+//    int cows = -bulls;
+//    for (const auto& symbol : other)//подсчёт коров
+//    {
+//        if (variant.code.find(symbol) != string::npos) ++cows;
+//        //if (variant.cows < cows) return false;
+//    }
+//    if (variant.cows != cows) return false;
+//    return true;
+//}
+
+
+
+bool operator ==(const TStep& variant, const string& other)
+{
+    int bulls = 0;
+    for (int i = 0; i < other.size(); ++i)//подсчёт быков
+        if (variant.code[i] == other[i]) ++bulls;
+    int cows = -bulls;
+    for (const auto& symbol : other)//подсчёт коров
+        if (variant.code.find(symbol) != string::npos) ++cows;
+    if (variant.bulls == bulls && variant.cows == cows) return true;
+    else return false;
+}
+
+class Bull_Cow
+{
+    string symbols;//строка вариантов символов
+    int listSize, count;//кол-во всех символов, разрядность
+    bool is_Same(const string& version, const char& x);//проверка на повтор символа
+    char GenerateSymbol() { return symbols[rand() % symbols.size()]; }//генерация символа
+    string GenerateStep();//генерация хода
+    vector<TStep> container;//контейнер ходов + быков и коров
+
+    bool is_Ok(const string& step)//проверка хода
+    {
+        for (const auto& variant : container)//перебор имеющегося контейнера с ходами
+            if (!(variant == step)) return false;//тут перегрузка оператора ==
+        return true;
+    }
+public:
+    Bull_Cow(const int& COUNT, const string& LIST);//конструктор
+
+    void SetStep(const string& step, const int& bulls, const int& cows)//заполнение контейнера ответами
+    {
+        if (bulls == 0 && cows == 0)//удаление символов из symbols, если bulls = 0 и cows = 0
+            for (char ch : step)
+                symbols.erase(remove(symbols.begin(), symbols.end(), ch), symbols.end());
+        else//заполнение контейнера ответами
+        {
+            TStep mStep;
+            mStep.code = step;
+            mStep.bulls = bulls;
+            mStep.cows = cows;
+            container.push_back(mStep);
+        }
+    }
+
+    string Step()//ход
+    {
+        string step;
+        if (container.empty()) step = GenerateStep();
+        else do step = GenerateStep(); while (!is_Ok(step));
+        return step;
+    }
+};
+
+int main()
+{
+    setlocale(LC_ALL, "ru");
+    int count = 8;
+    //string list = "0123456789abcdefghigklmnopqastuvwxyz";
+    string list = "0123456789abc";
+    Bull_Cow bc(count, list);
+    int b, c;
+    string x;
+    do
+    {
+        x = bc.Step();
+        cout << x << "\t";
+        cin >> b >> c;
+        bc.SetStep(x, b, c);
+    } while (b < count || c > 0);
+    cout << endl << "I Winner!" << endl;
+}
+
+Bull_Cow::Bull_Cow(const int& COUNT, const string& LIST)
+{
+    srand(time(NULL));
+    symbols = LIST;
+    count = COUNT;
+}
+
+bool Bull_Cow::is_Same(const string& version, const char& x)
+{
+    for (const auto& symbol : version) if (symbol == x) return true;
+    return false;
+}
+
+string Bull_Cow::GenerateStep()//генерация хода
+{
+    char x;
+    string step = "";//изначально символов в ходе нет
+    for (int i = 0; i < count; i++)
+    {
+        do x = GenerateSymbol();
+        while (is_Same(step, x));
+        step.push_back(x);//добавление символа в ход
+    }
+    return step;
+}

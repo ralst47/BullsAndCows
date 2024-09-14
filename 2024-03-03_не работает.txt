@@ -1,0 +1,95 @@
+// Советы по началу работы 
+//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
+//   2. В окне Team Explorer можно подключиться к системе управления версиями.
+//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
+//   4. В окне "Список ошибок" можно просматривать ошибки.
+//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
+//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
+#include <iostream>
+#include <string>
+#include <vector>
+//#include <list>
+
+using namespace::std;
+
+//class Char//класс символов
+//{
+//    string list;
+////public:
+//    int len;
+//    Char()
+//    {
+//        srand(time(NULL));
+//        list = "123456789";
+//        len = list.length();
+//    }
+//    char RandSymbol()
+//    {
+//        return list[rand()%len];
+//    }
+//    friend Version;
+//    //friend int GenerateTarget();
+//};
+
+class Version//класс версии ходов
+{
+    string list;//список символов
+    int len;//количество символов
+    bool IsSame(const string& version, const char& x)//проверка повтора символа
+    {
+        for (const auto& symbol : version)
+            if (symbol == x)
+                return true;
+        return false;
+    }
+    char RandSymbol()//генерация символа
+    {
+        return list[rand() % len];
+    }
+public:
+    class Step//класс ход
+    {
+        string step;
+        int bulls, cows;
+    };
+    Version()//конструктор
+    {    
+        srand(time(NULL));
+        list = "123456789";//символы
+        len = list.length();//количество символов
+        Char ch;//для генерации символа
+        const int COUNT = 4;//количество символов
+        vector<Step> box;//создание контейнера решений
+    }
+
+    string GenerateStep(const int& count)//создание варианта
+    {
+        char x;
+        string version = "";
+        for (int i = 0; i < count; i++)
+        {
+            do
+            {
+                /////////////////////x = ch.RandSymbol();
+            } while (IsSame(version, x));
+            version.push_back(x);
+        }
+        return version;
+    };
+};
+
+
+int main()
+{
+    //const int COUNT = 4;
+    //int COUNT = 4;
+    
+    //vector<string> container;//создание контейнера решений
+    //container.push_back(GenerateStep(COUNT));//добавление варианта
+    cout << container[0] << endl;//для вектора
+    /*
+        auto it = container.begin();
+        advance(it, 0);
+        cout << *it << endl;
+    */
+}
